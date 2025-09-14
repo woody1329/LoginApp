@@ -1,0 +1,34 @@
+# ---------------------------
+# Makefile for Django + Vite
+# ---------------------------
+
+# ---------------------------
+# Python linting & formatting
+# ---------------------------
+lint-py:
+	flake8 .
+
+format-py:
+	black . && isort .
+
+# ---------------------------
+# JavaScript / TypeScript linting & formatting
+# ---------------------------
+lint-js:
+	eslint "src/**/*.{ts,tsx}"
+
+format-js:
+	prettier --write "src/**/*.{ts,tsx}"
+
+# ---------------------------
+# Combined targets
+# ---------------------------
+lint: lint-py lint-js
+
+format: format-py format-js
+
+# ---------------------------
+# Dev environment
+# ---------------------------
+dev:
+	docker-compose up --build

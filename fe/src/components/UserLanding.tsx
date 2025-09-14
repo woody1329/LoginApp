@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getUser } from '../api';
+import { Button, Box, Typography, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import FullScreenCenter from './FullScreenCenter';
 
 const UserLanding: React.FC = () => {
-  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ username: string; email: string; ascii_art?: string } | null>(
+    null,
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,13 +22,57 @@ const UserLanding: React.FC = () => {
     fetchUser();
   }, []);
 
-  if (!user) return <div>Loading...</div>;
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  if (!user)
+    return (
+      <FullScreenCenter>
+        <CircularProgress />
+      </FullScreenCenter>
+    );
 
   return (
-    <div>
-      <h1>Welcome, {user.username}!</h1>
-      <p>Email: {user.email}</p>
-    </div>
+    <FullScreenCenter>
+      <Box display="flex" flexDirection="column" alignItems="center" sx={{ gap: 2, width: 400 }}>
+        <Typography variant="h4" component="h1" textAlign="center">
+          Welcome, {user.username}!
+        </Typography>
+
+        <Typography variant="body1" textAlign="center">
+          Email: {user.email}
+        </Typography>
+
+        <Box
+          sx={{
+            border: '1px solid #ccc',
+            padding: 2,
+            mt: 2,
+            width: '100%',
+            minHeight: 200,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {user.ascii_art ? (
+            <pre style={{ fontFamily: 'monospace', lineHeight: '6px', fontSize: '6px' }}>
+              {user.ascii_art}
+            </pre>
+          ) : (
+            <Typography variant="body2" color="textSecondary" textAlign="center">
+              Pending your masterpiece...
+            </Typography>
+          )}
+        </Box>
+
+        <Button variant="contained" color="secondary" fullWidth onClick={handleLogout}>
+          Logout
+        </Button>
+      </Box>
+    </FullScreenCenter>
   );
 };
 
