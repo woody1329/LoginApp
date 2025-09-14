@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.swp
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+be/staticfiles/
+media/
+.env
+
+# Docker
+*.env
+*.log
+docker-compose.override.yml
+
+# Node / Vite
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# VS Code / IDEs
+.vscode/
+persistent-terminals.log
