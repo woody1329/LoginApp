@@ -1,24 +1,11 @@
-from django.contrib.auth.models import User
-from rest_framework import serializers
-from rest_framework.authtoken.models import Token
-
-from .models import UserAsciiArt
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import UserAsciiArt
-from .utils import image_to_ascii  # your function to convert image to ASCII
-
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import UserAsciiArt
-from .utils import image_to_ascii
-
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
 from .models import UserAsciiArt
 from .utils import image_to_ascii  # your converter function
 
 User = get_user_model()
+
 
 class UserWithArtSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(write_only=True, required=False)
@@ -52,21 +39,6 @@ class UserWithArtSerializer(serializers.ModelSerializer):
         return rep
 
 
-
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
-
-
-# class UserAsciiArtSerializer(serializers.ModelSerializer):
-#     image = serializers.ImageField(write_only=True, required=True)
-
-#     class Meta:
-#         model = UserAsciiArt
-#         fields = ["image", "ascii_art"]
-#         read_only_fields = ["ascii_art"]
-
-#     def create(self, validated_data):
-#         image_file = validated_data.pop("image")
-#         ascii_str = image_to_ascii(image_file)
-#         return UserAsciiArt.objects.create(ascii_art=ascii_str, **validated_data)
