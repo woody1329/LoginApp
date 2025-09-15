@@ -4,12 +4,15 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import UserAsciiArt
 from .serializers import LoginSerializer, UserAsciiArtSerializer, UserSerializer
 
 
 class SignupView(APIView):
+    parser_classes = [MultiPartParser, FormParser]  # accept files
+
     def post(self, request):
         # Standard user creation
         serializer = UserSerializer(data=request.data)
@@ -20,10 +23,10 @@ class SignupView(APIView):
             image_file = request.FILES.get("image")
             if image_file:
                 ascii_serializer = UserAsciiArtSerializer(
-                    data={"user": user.id, "image": image_file}
+                    data={"image": image_file}
                 )
                 ascii_serializer.is_valid(raise_exception=True)
-                ascii_serializer.save(user=user)
+                ascii_serializer.save(user=user)  # pass user as object, not id
 
             # Return token as before
             token = Token.objects.get(user=user)
@@ -40,6 +43,7 @@ class SignupView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class LoginView(APIView):

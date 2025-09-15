@@ -86,8 +86,7 @@ const Signup: React.FC = () => {
         <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
           Sign Up
         </Button>
-      </Box>
-      <Box sx={{ mt: 2 }}>
+        
         <LinkLogin />
       </Box>
     </FullScreenCenter>
