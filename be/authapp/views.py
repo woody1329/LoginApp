@@ -4,46 +4,30 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import UserAsciiArt
-from .serializers import LoginSerializer, UserAsciiArtSerializer, UserSerializer
+from .serializers import LoginSerializer
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from .serializers import UserWithArtSerializer
 
 class SignupView(APIView):
-    parser_classes = [MultiPartParser, FormParser]  # accept files
-
     def post(self, request):
-        # Standard user creation
-        serializer = UserSerializer(data=request.data)
+        serializer = UserWithArtSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-
-            # Handle optional image upload
-            image_file = request.FILES.get("image")
-            if image_file:
-                ascii_serializer = UserAsciiArtSerializer(
-                    data={"image": image_file}
-                )
-                ascii_serializer.is_valid(raise_exception=True)
-                ascii_serializer.save(user=user)  # pass user as object, not id
-
-            # Return token as before
-            token = Token.objects.get(user=user)
+            token, _ = Token.objects.get_or_create(user=user)
             return Response(
                 {
-                    "user": {
-                        "id": user.id,
-                        "username": user.username,
-                        "email": user.email,
-                    },
+                    "user": serializer.data,  # includes ascii_art automatically
                     "token": token.key,
                 },
                 status=status.HTTP_201_CREATED,
             )
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class LoginView(APIView):
