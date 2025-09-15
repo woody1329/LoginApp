@@ -9,3 +9,6 @@ Open a terminal in the root of the repo. There should be a 'docker-compose.yml' 
 Run 'docker-compose up --build'
 
 The LoginApp will then be available at (http://localhost:5173)
+
+You may need to add .env files to /be and /fe.
+Keeping business critical info private is important.
